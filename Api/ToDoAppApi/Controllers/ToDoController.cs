@@ -22,6 +22,7 @@ namespace ToDoAppApi.Controllers
 
         [HttpGet]
         [SwaggerOperation("Get ToDoList")]
+        [SwaggerResponse(200, "Successfully loaded ToDo Item", typeof(ToDoItem))]
         public async Task<ActionResult<List<ToDoItem>>> Get(int status)
         {
             if (status < 1 || status > 3)
@@ -59,7 +60,7 @@ namespace ToDoAppApi.Controllers
         }
 
         [HttpPost("MarkAsDone")]
-        [SwaggerOperation("Completed the task.")]
+        [SwaggerOperation("Complete the task.")]
         [SwaggerResponse(200, "Successfully updated ToDo Item", typeof(ToDoItem))]
         [SwaggerResponse(500, "Model validatation fails or unhandled error occured.", typeof(ToDoItem))]
         [SwaggerResponse(400, "Model data type mismatch might happen.", typeof(ToDoItem))]
@@ -106,6 +107,9 @@ namespace ToDoAppApi.Controllers
 
         [HttpDelete("{id}")]
         [SwaggerOperation("Deletes ToDoItem (soft delete).")]
+        [SwaggerResponse(200, "Successfully deleted ToDoItem", typeof(ToDoItem))]
+        [SwaggerResponse(500, "Model validatation fails or unhandled error occured.", typeof(ToDoItem))]
+        [SwaggerResponse(400, "Model data type mismatch might happen.", typeof(ToDoItem))]
         public IActionResult Delete(int id)
         {
             try

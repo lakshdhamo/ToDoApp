@@ -3,19 +3,27 @@ import { ITask } from "../Objects/ITask";
 
 interface Props {
   task: ITask;
-  completeTask(taskNameToDelete: string): void;
+  removeTask(taskId: number): void;
+  completeTask(taskId: number): void;
 }
 
-const TodoTask = ({ task, completeTask }: Props) => {
+const TodoTask = ({ task, removeTask, completeTask }: Props) => {
   return (
     <div className="task">
       <div className="content">
         <span>{task.itemName}</span>
-        <span>{task.deadline.toLocaleDateString()}</span>
+        <span>{task.deadline}</span>
       </div>
       <button
         onClick={() => {
-          completeTask(task.itemName);
+          completeTask(task.id !== undefined ? task.id : 0);
+        }}
+      >
+        Done
+      </button>
+      <button
+        onClick={() => {
+          removeTask(task.id !== undefined ? task.id : 0);
         }}
       >
         X

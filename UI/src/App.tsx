@@ -1,12 +1,13 @@
 import React from 'react';
 import { ToDoLayout } from './app/Components/ToDoLayout';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container } from 'react-bootstrap';
 
 function App() {
   return (
-    <div className="App">
+    <Container>
       <ToDoLayout />
-    </div>
+    </Container>
   );
 }
 

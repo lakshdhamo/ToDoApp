@@ -21,6 +21,11 @@ namespace ToDo.Data.Repository
             _toDoItemContext = schoolContext;
         }
 
+        /// <summary>
+        /// Loads all the Todo items
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<ToDoItem>> GetAllToDoItemsAsync(int status)
         {
             var query = "SELECT [Id], [ItemName], [Deadline], [IsDone] " +
@@ -39,6 +44,11 @@ namespace ToDo.Data.Repository
             return toDoItems.ToList();
         }
 
+        /// <summary>
+        /// Create new Task
+        /// </summary>
+        /// <param name="toDoItem"></param>
+        /// <returns></returns>
         public async Task<ToDoItemDto> InsertAsync(ToDoItemDto toDoItem)
         {
             var query = "INSERT INTO ToDoItem (ItemName, Deadline, IsDone, IsActive) " +
@@ -66,6 +76,11 @@ namespace ToDo.Data.Repository
             return toDoItemDto;
         }
 
+        /// <summary>
+        /// Complete the Task done
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task MarkAsDone(int taskId)
         {
             var query = "UPDATE ToDoItem SET IsDone = 1 " +
@@ -78,6 +93,11 @@ namespace ToDo.Data.Repository
             await connection.QueryAsync<int>(query, parameters);
         }
 
+        /// <summary>
+        /// Delete the task
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task DeleteTask(int taskId)
         {
             var query = "UPDATE ToDoItem SET IsActive = 0 " +
