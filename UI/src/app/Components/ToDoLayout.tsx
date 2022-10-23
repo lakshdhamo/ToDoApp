@@ -1,31 +1,32 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { MessageType } from '../Objects/MessageTypeEnum';
 import { ITask } from "../Objects/ITask";
-import TodoTask from "./TodoTask";
 import { useAppSelector, useAppDispatch } from '../Store/hooks';
 import {
   completeTaskAsync,
   selectTodo,
   updateMessage,
   insertToDoAsync,
-  loadToDosAsync,
   removeTaskAsync
 } from '../Store/todoSlice';
 import MessagePanel from './MessagePanel';
-import { Button, Col, Form, FormGroup, FormLabel, Row, Stack, Table } from 'react-bootstrap';
+import { Button, Form, Stack, Table } from 'react-bootstrap';
 import TaskCategory from './TaskCategory';
 import { faCheck, faXmark  } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function ToDoLayout() {
+  // Selector to get the latest store value
   const todoList = useAppSelector(selectTodo);
+  // Dispatcher is used to emit the event to update the store
   const dispatch = useAppDispatch();
-  
-  
-    const [task, setTask] = useState<string>("");
-    const [deadline, setDeadline] = useState(new Date().toDateString());
     
-    const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  // Local store to maintain Task & Due date
+  const [task, setTask] = useState<string>("");
+  const [deadline, setDeadline] = useState(new Date().toDateString());
+    
+  // Even handler for Task entry
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
         setTask(event.target.value);
         if(todoList.message.show === true)
         {
@@ -33,10 +34,11 @@ export function ToDoLayout() {
         }
     };
 
-    const addTaskLocal = (): void => {
-      if(task.length < 8)
+    // Method to add the Task to the Task list
+    const addTask  = (): void => {
+      if(task.length <= 10)
       {
-        dispatch(updateMessage({message : 'Task name should be greater than 8 characters', show : true, type: MessageType.Error}));
+        dispatch(updateMessage({message : 'Task name must be longer than 10 characters', show : true, type: MessageType.Error}));
       }
       else{
         const newTask:ITask = { id : 0, itemName: task, deadline: deadline, isDone: false};
@@ -46,12 +48,14 @@ export function ToDoLayout() {
       }      
     };
   
+    // Reset the form controls
     const resetForm = () =>
     {
       setTask("");
       setDeadline(new Date().toDateString());
     };
 
+    // Remove the message panel
     const closeMessagePanelInDelay = () =>
     {
       setTimeout(() => 
@@ -59,11 +63,13 @@ export function ToDoLayout() {
        2000);
     };
 
+    // Delete the task from the Task list
     const onRemoveTask = (taskId: number): void => {
       dispatch(removeTaskAsync(taskId));
-      //dispatch(removeTask(taskNameToDelete));
       closeMessagePanelInDelay();
     };
+
+    // Complete the task.
     const onCompleteTask = (taskId: number): void => {
       dispatch(completeTaskAsync(taskId));
       closeMessagePanelInDelay();
@@ -78,10 +84,10 @@ export function ToDoLayout() {
           </Form.Group>
           <Form.Group className="mb-3" controlId="fgDeadline">
             <Form.Label>Due Date</Form.Label>
-            <Form.Control type="date" value={deadline} onChange={(e)=>setDeadline(e.target.value)} />
+            <Form.Control type="date" min={new Date().toDateString()} value={deadline} onChange={(e)=>setDeadline(e.target.value)} />
           </Form.Group>
           <Stack direction="horizontal" gap={3}>
-            <Button variant="primary" className='ms-auto' onClick={addTaskLocal}>Add Task</Button>
+            <Button variant="primary" className='ms-auto' onClick={addTask}>Add Task</Button>
             <Button variant="secondary" type="reset">Reset</Button>  
           </Stack>
         </Form>
@@ -139,26 +145,14 @@ export function ToDoLayout() {
                     <FontAwesomeIcon icon={ faXmark } /> 
                     </Button>  
                     </Stack>
-
-                  //   <button
-                  //   onClick={() => {
-                  //     onRemoveTask(task.id !== undefined ? task.id : 0);
-                  //   }}
-                  // >
-                  //   X
-                  // </button>
+                  
                   }
                 </td>
               </tr>;
             })}
       </tbody>
     </Table>
-    
-        {/* <div className="todoList">
-            {todoList.todos.map((task: ITask, key: number) => {
-              return <TodoTask key={key} task={task} removeTask={onRemoveTask} completeTask={onCompleteTask}/>;
-            })}
-        </div> */}
+
         </>
     );
 }

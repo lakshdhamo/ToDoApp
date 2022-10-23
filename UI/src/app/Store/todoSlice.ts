@@ -5,12 +5,14 @@ import { MessageType } from '../Objects/MessageTypeEnum';
 import { RootState } from './store';
 import { insertTask, loadTasks, completeTaskAsDone, deleteTask } from '../Services/todoService';
 
+// Store data
 export interface ToDoState {
   todos: ITask[];
   message: IMessage;
   isLoading: boolean;
 }
 
+// Initial Store value
 const initialState: ToDoState = {
   todos: [],
   message: { message: '', show: false, type: MessageType.Info },
@@ -28,6 +30,7 @@ export const todoSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+    // Insert task reducers
       .addCase(insertToDoAsync.pending, (state) => {
         state.isLoading = true;
         state.message = { message: 'Task adding is in Progress', show: true, type: MessageType.Loading };
@@ -41,18 +44,20 @@ export const todoSlice = createSlice({
         state.isLoading = false;
         state.message = { message: 'Task add is not successful', show: true, type: MessageType.Error };
       })
+      // Load task reducers
       .addCase(loadToDosAsync.pending, (state) => {
         state.isLoading = true;
-        state.message = { message: 'Loading task is in Progress', show: true, type: MessageType.Loading };
       })
       .addCase(loadToDosAsync.fulfilled, (state, action:any) => {
         state.isLoading = true;
-        state.todos = action.payload;        
+        state.todos = action.payload;     
+        state.message = { message: '', show: false, type: MessageType.Loading };   
       })
       .addCase(loadToDosAsync.rejected, (state) => {
         state.isLoading = false;
         state.message = { message: 'Load Task is not successful', show: true, type: MessageType.Error };
       })
+      // Complete task reducers
       .addCase(completeTaskAsync.pending, (state) => {
         state.isLoading = true;
         state.message = { message: 'Task completion is in Progress', show: true, type: MessageType.Loading };
@@ -60,7 +65,7 @@ export const todoSlice = createSlice({
       .addCase(completeTaskAsync.fulfilled, (state, action:any) => {
         state.isLoading = true;
         state.message = { message: 'Task completed successfully!', show: true, type: MessageType.Success };
-        let task = state.todos.find(x => x.id === action.payload);
+        let task = state.todos.find(x => x.id === action.payload.value);
         if(task !== undefined)
         {
           task.isDone = true;
@@ -70,6 +75,7 @@ export const todoSlice = createSlice({
         state.isLoading = false;
         state.message = { message: 'Task completion is not successful', show: true, type: MessageType.Error };
       })
+      // Delete task reducers
       .addCase(removeTaskAsync.pending, (state) => {
         state.isLoading = true;
         state.message = { message: 'Delete Task is in Progress', show: true, type: MessageType.Loading };

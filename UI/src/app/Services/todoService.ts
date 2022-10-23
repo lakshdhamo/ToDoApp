@@ -12,7 +12,6 @@ export async function loadTasks(status: number) {
                 'Content-Type': 'application/json'
             },
             referrerPolicy: 'no-referrer',
-            // body: JSON.stringify(todoItem),
         }
     )
         .then(data => Promise.resolve(data.json()))
