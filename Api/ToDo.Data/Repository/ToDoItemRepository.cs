@@ -21,11 +21,21 @@ namespace ToDo.Data.Repository
             _toDoItemContext = schoolContext;
         }
 
-        public async Task<IEnumerable<ToDoItem>> GetAllToDoItemsAsync()
+        public async Task<IEnumerable<ToDoItem>> GetAllToDoItemsAsync(int status)
         {
-            var query = "SELECT Id, ItemName, ItemDays FROM ToDoItem";
+            var query = "SELECT [Id], [ItemName], [Deadline], [IsDone] " +
+                          "FROM[Practice].[dbo].[ToDoItem] " +
+                          "where IsActive = 1 AND IsDone = " +
+                          "CASE @IsDoneVal " +
+                          "   WHEN 1 THEN 1 " +
+                          "  WHEN 2 THEN 0 " +
+                          " ELSE IsDone " +
+                          "END ";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("IsDoneVal", status, DbType.Int32);
             using var con = _toDoItemContext.CreateConnection();
-            var toDoItems = await con.QueryAsync<ToDoItem>(query);
+            var toDoItems = await con.QueryAsync<ToDoItem>(query, parameters);
             return toDoItems.ToList();
         }
 
@@ -43,19 +53,11 @@ namespace ToDo.Data.Repository
 
             using var connection = this._toDoItemContext.CreateConnection();
 
-            try
-            {
-                var id = await connection.QuerySingleAsync<int>(query, parameters);
-            }
-            catch(Exception e)
-            {
-                string s = "";
-            }
-            
+            var id = await connection.QuerySingleAsync<int>(query, parameters);
 
             var toDoItemDto = new ToDoItemDto
             {
-                Id = 0,
+                Id = id,
                 ItemName = toDoItem.ItemName,
                 Deadline = toDoItem.Deadline,
                 IsDone = toDoItem.IsDone
@@ -64,5 +66,28 @@ namespace ToDo.Data.Repository
             return toDoItemDto;
         }
 
+        public async Task MarkAsDone(int taskId)
+        {
+            var query = "UPDATE ToDoItem SET IsDone = 1 " +
+                        "WHERE Id = @Id ";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", taskId, DbType.Int32);
+
+            using var connection = this._toDoItemContext.CreateConnection();
+            await connection.QueryAsync<int>(query, parameters);
+        }
+
+        public async Task DeleteTask(int taskId)
+        {
+            var query = "UPDATE ToDoItem SET IsActive = 0 " +
+                        "WHERE Id = @Id ";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", taskId, DbType.Int32);
+
+            using var connection = this._toDoItemContext.CreateConnection();
+            await connection.QueryAsync<int>(query, parameters);
+        }
     }
 }

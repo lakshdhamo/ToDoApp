@@ -13,10 +13,12 @@ namespace ToDo.Domain.Interfaces
         Task<List<ToDoItem>> GetToDoList(int status);
 
         Task<ToDoItemDto> CreateToDoItemAsync(ToDoItemDto toDoItem);
-            
+
+        Task MarkAsDone(int id);
+
         ToDoItem UpdateToDoItem(in int id, ToDoItem toDoItem);
 
-        void DeleteToDoItem(in int id);
+        Task DeleteToDoItem(int id);
 
         bool IsToDoItemAlreadyExists(ToDoItemDto toDoItem);
     }

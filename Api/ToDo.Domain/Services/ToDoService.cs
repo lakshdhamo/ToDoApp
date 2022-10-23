@@ -24,7 +24,7 @@ namespace ToDo.Domain.Services
 
         public async Task<List<ToDoItem>> GetToDoList(int status)
         {
-            return (List<ToDoItem>)await _toDoItemRepostory.GetAllToDoItemsAsync();
+            return (List<ToDoItem>)await _toDoItemRepostory.GetAllToDoItemsAsync(status);
         }
 
         public async Task<ToDoItemDto> CreateToDoItemAsync(ToDoItemDto toDoItem)
@@ -32,14 +32,19 @@ namespace ToDo.Domain.Services
             return await _toDoItemRepostory.InsertAsync(toDoItem);
         }
 
+        public async Task MarkAsDone(int id)
+        {
+            await _toDoItemRepostory.MarkAsDone(id);
+        }
+
         public ToDoItem UpdateToDoItem(in int id, ToDoItem toDoItem)
         {
             return null;
         }
 
-        public void DeleteToDoItem(in int id)
+        public async Task DeleteToDoItem(int id)
         {
-
+            await _toDoItemRepostory.DeleteTask(id);
         }
 
         public bool IsToDoItemAlreadyExists(ToDoItemDto toDoItem)

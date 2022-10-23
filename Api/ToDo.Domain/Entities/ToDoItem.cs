@@ -10,7 +10,7 @@ namespace ToDo.Domain.Entities
     {
         public int Id { get; set; }
         public string ItemName { get; set; }
-        public DateOnly Deadline { get; set; }
+        public DateTime Deadline { get; set; }
 
         public bool IsActive { get; set; }
 

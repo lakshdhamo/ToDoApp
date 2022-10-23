@@ -20,7 +20,7 @@ namespace ToDoAppApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet("ToDoList")]
+        [HttpGet]
         [SwaggerOperation("Get ToDoList")]
         public async Task<ActionResult<List<ToDoItem>>> Get(int status)
         {
@@ -49,6 +49,28 @@ namespace ToDoAppApi.Controllers
 
                 ToDoItemDto result = await _toDoService.CreateToDoItemAsync(toDoItem);
                 return Created("/api/ToDoItem/{id}", result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Error in ToDoItem/Post method : {e.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   "Error saving data - " + e.Message);
+            }
+        }
+
+        [HttpPost("MarkAsDone")]
+        [SwaggerOperation("Completed the task.")]
+        [SwaggerResponse(200, "Successfully updated ToDo Item", typeof(ToDoItem))]
+        [SwaggerResponse(500, "Model validatation fails or unhandled error occured.", typeof(ToDoItem))]
+        [SwaggerResponse(400, "Model data type mismatch might happen.", typeof(ToDoItem))]
+        public async Task<ActionResult<int>> MarkAsDone(int id)
+        {
+            try
+            {
+                _logger.LogInformation("ToDoItem/Post method fired on {date}", DateTime.Now);
+
+                await _toDoService.MarkAsDone(id);
+                return Ok(StatusCode(200, id));
             }
             catch (Exception e)
             {
@@ -93,7 +115,7 @@ namespace ToDoAppApi.Controllers
 
                 _logger.LogInformation("ToDoItem/Delete method fired on {date}", DateTime.Now);
                 _toDoService.DeleteToDoItem(id);
-                return Ok(StatusCode(200));
+                return Ok(StatusCode(200, id));
             }
             catch (Exception e)
             {

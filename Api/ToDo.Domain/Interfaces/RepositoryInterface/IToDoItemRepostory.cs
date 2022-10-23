@@ -10,8 +10,13 @@ namespace ToDo.Domain.Interfaces.RepositoryInterface
 {
     public interface IToDoItemRepostory
     {
-        Task<IEnumerable<ToDoItem>> GetAllToDoItemsAsync();
+        Task<IEnumerable<ToDoItem>> GetAllToDoItemsAsync(int status);
 
         Task<ToDoItemDto> InsertAsync(ToDoItemDto toDoItem);
+
+        Task MarkAsDone(int id);
+
+        Task DeleteTask(int id);
+
     }
 }
