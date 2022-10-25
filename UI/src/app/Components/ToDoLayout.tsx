@@ -88,7 +88,7 @@ export function ToDoLayout() {
           </Form.Group>
           <Stack direction="horizontal" gap={3}>
             <Button variant="primary" className='ms-auto' onClick={addTask}>Add Task</Button>
-            <Button variant="secondary" type="reset">Reset</Button>  
+            <Button variant="secondary" type="reset" onClick={resetForm}>Reset</Button>  
           </Stack>
         </Form>
 
